@@ -1,20 +1,37 @@
 workflows:
-  build_ios:
-    name: Build iOS App
+  ios-build:
+    name: iOS build
     environment:
       xcode: latest
-      node: 20.12.2
+      cocoapods: default
+      ruby: 3.1.0
+      vars:
+        GITHUB_USER: ${{github.username}}
+        GITHUB_TOKEN: ${{github.token}}
+    triggering:
+      events:
+        - push
+        - pull_request
     scripts:
-      - npm install
-      - cd ios && pod install
-      - xcodebuild -workspace ios/<YourAppName>.xcworkspace \
-                    -scheme <YourAppName> \
-                    -sdk iphoneos \
-                    -configuration Release \
-                    -archivePath build/YourAppName.xcarchive archive
-      - xcodebuild -exportArchive \
-                    -archivePath build/YourAppName.xcarchive \
-                    -exportOptionsPlist ios/exportOptions.plist \
-                    -exportPath build
+      - name: Cài đặt Bundler
+        script: |
+          gem install bundler
+      - name: Cài đặt các phụ thuộc từ Gemfile
+        script: |
+          bundle install || echo "No Gemfile found, skipping bundle install"
+      - name: Cài đặt CocoaPods
+        script: |
+          cd ios
+          bundle exec pod install
+      - name: Build ứng dụng iOS
+        script: |
+          xcodebuild -workspace ios/Uniqlo.xcodeproj -scheme Uniqlo -sdk iphoneos -configuration Release archive -archivePath $CM_BUILD_DIR/build/Uniqlo.xcarchive
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/Uniqlo.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $CM_BUILD_DIR/build/Uniqlo.ipa
     artifacts:
-      - build/*.ipa
+      - $CM_BUILD_DIR/build/Uniqlo.ipa
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
