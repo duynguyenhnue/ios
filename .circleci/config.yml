@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     macos:
-      xcode: "15.0.0"  # Sử dụng phiên bản Xcode 15
+      xcode: "14.2.0"  # Sử dụng phiên bản Xcode 15
     resource_class: macos.medium  # Đảm bảo sử dụng tài nguyên hợp lệ
     steps:
       - checkout
