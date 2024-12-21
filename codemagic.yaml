@@ -5,7 +5,7 @@ workflows:
       xcode: latest
       node: 16
     scripts:
-      - npm install
+      - yarn install
       - cd ios && pod install
       - xcodebuild -workspace ios/uniqlo.xcworkspace \
                     -scheme uniqlo \
