@@ -10,6 +10,6 @@ target 'YourProject' do
     # Pods for testing
   end
 
-  # Đảm bảo rằng bạn đã thêm Flutter vào Podfile nếu bạn sử dụng Flutter
-  flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
+  # Nếu bạn không sử dụng Flutter, không cần dòng lệnh này:
+  # flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
 end
