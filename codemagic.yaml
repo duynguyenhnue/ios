@@ -1,18 +1,20 @@
 workflows:
-  react_native_ios:
-    name: Build React Native iOS
+  build_ios:
+    name: Build iOS App
     environment:
-      node: 16
       xcode: latest
+      node: 16
     scripts:
       - npm install
       - cd ios && pod install
+      - xcodebuild -workspace ios/uniqlo.xcworkspace \
+                    -scheme uniqlo \
+                    -sdk iphoneos \
+                    -configuration Release \
+                    -archivePath build/uniqlo.xcarchive archive
+      - xcodebuild -exportArchive \
+                    -archivePath build/uniqlo.xcarchive \
+                    -exportOptionsPlist ios/exportOptions.plist \
+                    -exportPath build
     artifacts:
-      - build/ios/*.ipa
-    app_store_connect:
-      apple_id: "<YOUR_APPLE_ID>"
-      team_id: "<YOUR_TEAM_ID>"
-      api_key: Encrypted(<YOUR_API_KEY>)
-    publishing:
-      app_store:
-        submit_to_app_store: true
+      - build/*.ipa
