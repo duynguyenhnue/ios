@@ -1,14 +1,10 @@
 version: 2.1
 
-executors:
-  macos_executor:
-    macos:
-      xcode: 13.2.0  # Chọn phiên bản Xcode phù hợp với dự án của bạn
-    resource_class: macos.x86.medium
-
 jobs:
   build:
-    executor: macos_executor
+    macos:
+      xcode: "12.4.0"  # Chọn phiên bản Xcode phù hợp
+    resource_class: macos.medium   # Đảm bảo sử dụng tài nguyên hợp lệ
     steps:
       - checkout
       - run:
@@ -34,7 +30,7 @@ jobs:
           name: Build and test
           command: |
             cd ios
-            xcodebuild -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.0' clean build test
+            xcodebuild -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.4' clean build test
 
 workflows:
   version: 2
