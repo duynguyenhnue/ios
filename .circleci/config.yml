@@ -1,17 +1,43 @@
 version: 2.1
 
+executors:
+  macos_executor:
+    macos:
+      xcode: 13.2.0  # Chọn phiên bản Xcode phù hợp với dự án của bạn
+    resource_class: macos.x86.medium
+
 jobs:
   build:
-    macos:
-      xcode: "12.4.0" # Chọn phiên bản Xcode phù hợp với dự án của bạn
-    working_directory: ~/project
+    executor: macos_executor
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install Node.js
           command: |
-            bundle install # Nếu bạn sử dụng Bundler
-            pod install # Nếu bạn sử dụng CocoaPods
+            brew install nvm
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
+            nvm install 14
+            nvm use 14
+      - run:
+          name: Install Yarn
+          command: npm install -g yarn
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Install CocoaPods
+          command: |
+            cd ios
+            pod install
       - run:
           name: Build and test
-          command: xcodebuild -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.4' clean build test
+          command: |
+            cd ios
+            xcodebuild -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.0' clean build test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
