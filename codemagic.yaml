@@ -1,0 +1,35 @@
+workflows:
+  ios-build:
+    name: iOS build
+    environment:
+      # You can use the Xcode version you need; here, we use the latest available
+      xcode: latest
+      cocoapods: default
+      # Specify the environment variables for the GitHub student account
+      vars:
+        GITHUB_USER: ${{github.username}}
+        GITHUB_TOKEN: ${{github.token}}
+      # Add any additional environment variables you might need
+    triggering:
+      events:
+        - push
+        - pull_request
+    scripts:
+      - name: Install dependencies
+        script: |
+          gem install bundler
+          bundle install
+          bundle exec pod install
+      - name: Build iOS app
+        script: xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $CM_BUILD_DIR/build/Runner.xcarchive
+      - name: Export IPA
+        script: xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/Runner.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $CM_BUILD_DIR/build/Runner.ipa
+    artifacts:
+      - $CM_BUILD_DIR/build/Runner.ipa
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify_on_build_start: true
+        notify_on_build_success: true
+        notify_on_build_failure: true
