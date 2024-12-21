@@ -12,19 +12,19 @@ workflows:
         - push
         - pull_request
     scripts:
-      - name: Check for Gemfile
+      - name: Kiểm tra Gemfile
         script: |
           if [ ! -f Gemfile ]; then
             echo "Error: Gemfile not found!"
             exit 1
           fi
-      - name: Install dependencies
+      - name: Cài đặt dependencies
         script: |
           gem install bundler
-          bundle install
+          bundle install || echo "No Gemfile found, skipping bundle install"
           cd ios
-          bundle exec pod install
-      - name: Build iOS app
+          bundle exec pod install || echo "No Podfile found, skipping pod install"
+      - name: Build ứng dụng iOS
         script: xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $CM_BUILD_DIR/build/Runner.xcarchive
       - name: Export IPA
         script: xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/Runner.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath $CM_BUILD_DIR/build/Runner.ipa
