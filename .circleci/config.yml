@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     macos:
-      xcode: "13.4.1"  # Chọn phiên bản Xcode phù hợp và được hỗ trợ
+      xcode: "15.0.0"  # Sử dụng phiên bản Xcode 15
     resource_class: macos.medium  # Đảm bảo sử dụng tài nguyên hợp lệ
     steps:
       - checkout
@@ -30,7 +30,7 @@ jobs:
           name: Build and test
           command: |
             cd ios
-            xcodebuild -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.2' clean build test
+            xcodebuild -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' clean build test
 
 workflows:
   version: 2
