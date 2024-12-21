@@ -13,6 +13,20 @@ workflows:
         - push
         - pull_request
     scripts:
+      - name: Cài đặt Homebrew và các gói liên quan
+        script: |
+          brew update
+          brew upgrade
+          brew install openssl readline libyaml gmp
+      - name: Thiết lập các biến môi trường
+        script: |
+          export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+          export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
+          export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@3/lib/pkgconfig"
+      - name: Cài đặt Ruby 3.1.0
+        script: |
+          RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3) --with-readline-dir=$(brew --prefix readline) --with-libyaml-dir=$(brew --prefix libyaml) --with-gmp-dir=$(brew --prefix gmp)" rbenv install 3.1.0
       - name: Cài đặt Bundler
         script: |
           gem install bundler
